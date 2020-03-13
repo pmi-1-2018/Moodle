@@ -8,12 +8,9 @@ namespace Moodle.Classes
     {
         public string Group { get; }
 
-        public int FacultyID { get; }
-
-        public Student(int id, string name, string surname, string password, string login, string group, int facultyID) : base (id, name, surname, password, login)
+        public Student(int id, string name, string surname, string password, string login, string group, int facultyID) : base (id, name, surname, password, login, facultyID)
         {
             Group = group;
-            FacultyID = facultyID;
         }
     }
 }

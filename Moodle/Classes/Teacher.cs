@@ -6,11 +6,8 @@ namespace Moodle.Classes
 {
    public class Teacher : User
     {
-        public int FacultyID { get; }
-
-        public Teacher(int id, string name, string surname, string password, string login, int facultyID) : base(id, name, surname, password, login)
+        public Teacher(int id, string name, string surname, string password, string login, int facultyID) : base(id, name, surname, password, login, facultyID)
         {
-            FacultyID = facultyID;
         }
     }
 }
