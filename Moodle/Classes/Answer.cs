@@ -4,7 +4,16 @@ using System.Text;
 
 namespace Moodle.Classes
 {
-    class Answer
+    public class Answer
     {
+        public string Content { get; }
+
+        public bool IsRight { get; }
+
+        public Answer(string content, bool isRight)
+        {
+            this.Content = content;
+            this.IsRight = isRight;
+        }
     }
 }
