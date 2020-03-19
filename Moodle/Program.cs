@@ -13,8 +13,6 @@ namespace Moodle
 
         static void Main(string[] args)
         {
-
-            //var menu = new MainMenu();
             bool displayMenu = true;
             while (displayMenu)
             {
