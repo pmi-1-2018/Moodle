@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Moodle.Menu
+namespace Moodle
 {
     class MainMenu
     {
-        public static bool DisplayMenu()
+        public  bool DisplayMenu()
         {
             Console.Clear();
             Console.WriteLine("Welcome to the Moodle!");
