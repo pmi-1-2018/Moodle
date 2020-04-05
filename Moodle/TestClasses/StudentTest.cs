@@ -6,18 +6,14 @@ namespace Moodle.Classes
 {
     public class StudentTest
     {
-        public IList<Question> ListOfQuestions { get; }
-        public string Author { get; }
-        public int ID { get; private set; }
-        public string Name { get; }
-        public DateTime Date { get; }
-        public double MinResult { get; }
-        public bool CanRetake { get; }
-        public void SetID(int id)
-        {
-            ID = id;
-        }
-        public StudentTest(int id, string name, string author, DateTime dateTime, IList<Question> listOfQuestions, double minResult, bool canRetake)
+        public IList<Question> ListOfQuestions { get; set; }
+        public string Author { get; set; }
+        public int ID { get; set; }
+        public string Name { get; set; }
+        public DateTime Date { get; set; }
+        public double MaxResult { get; set; }
+        public bool CanRetake { get; set; }
+        public StudentTest(int id, string name, string author, DateTime dateTime, IList<Question> listOfQuestions, double maxResult, bool canRetake)
         {
             ID = id;
             this.Name = name;
@@ -25,8 +21,17 @@ namespace Moodle.Classes
             this.Date = dateTime;
             this.ListOfQuestions = listOfQuestions;
             this.CanRetake = canRetake;
-            this.MinResult = minResult;
+            this.MaxResult = maxResult;
         }
-
+        public StudentTest()
+        {
+            ID = 0;
+            this.Name = "Unknown";
+            this.Author = "Unknown";
+            this.Date = new DateTime();
+            this.ListOfQuestions = new List<Question>();
+            this.CanRetake = false;
+            this.MaxResult = 0;
+        }
     }
 }
