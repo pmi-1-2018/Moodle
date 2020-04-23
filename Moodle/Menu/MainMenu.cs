@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Moodle.Menu
+namespace Moodle
 {
     class MainMenu
     {
-        public static bool DisplayMenu()
+        public bool DisplayMenu()
         {
             Console.Clear();
             Console.WriteLine("Welcome to the Moodle!");
@@ -17,6 +17,7 @@ namespace Moodle.Menu
             Console.WriteLine("3) Download test");
             Console.WriteLine("5) Exit");
             Console.Write("\r\nSelect an option: ");
+
 
             switch (Console.ReadLine())
             {

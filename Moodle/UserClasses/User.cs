@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Data.SQLite;
 
 namespace Moodle.Classes
 {
-    public abstract class User
+    public  class User
     {
         public string Name { get;}
 
@@ -20,6 +21,16 @@ namespace Moodle.Classes
         public string Login { get; }
 
         public int FacultyID { get; }
+
+        public User()
+        {
+            Name = null;
+            Surname = null;
+            ID = 0;
+            Email = null;
+            Password = null;
+            Login = null;
+        }
         public User(int id, string name, string surname, string password, string login, int facultyId)
         {
             Name = name;
@@ -46,6 +57,13 @@ namespace Moodle.Classes
         public bool isPassword(string password)
         {
             return Regex.IsMatch(password, @"^(?=.*[a - z])(?=.*[A - Z])(?=.*\d)(?=.*[^\da - zA - Z]).{ 8,15}$");
+        }
+
+        public User LogIntoMoodle()
+        {
+            User user = new User();
+            Console.WriteLine("Please input your login or email\n");
+            return user;
         }
     }
 }
