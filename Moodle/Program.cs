@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Data.SQLite;
+using System.IO;
 
 
 namespace Moodle
@@ -13,6 +15,24 @@ namespace Moodle
             {
                 displayMenu = menu.DisplayMenu();
             }
+        }
+
+        public static SQLiteConnection CreateConnection()
+        {
+            SQLiteConnection sqlite_conn;
+            string path = Path.Combine(Environment.CurrentDirectory, @"../../../", "moodleDb.db");
+            string connetionString = "Data Source=" + path + ";";
+            sqlite_conn = new SQLiteConnection(connetionString);
+            try
+            {
+                sqlite_conn.Open();
+            }
+            catch (Exception ex)
+            {
+                
+            }
+            return sqlite_conn;
+            
         }
 
     }

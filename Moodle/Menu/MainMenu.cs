@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Data.SQLite;
 
 namespace Moodle
 {
@@ -18,11 +19,12 @@ namespace Moodle
             Console.WriteLine("5) Exit");
             Console.Write("\r\nSelect an option: ");
 
+            User user = new User();
 
             switch (Console.ReadLine())
             {
                 case "1":
-                    // Log in function
+                    user.LogIntoMoodle();
                     return true;
                 case "2":
                     // Sign up function
