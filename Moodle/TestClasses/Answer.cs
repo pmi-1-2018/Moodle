@@ -6,14 +6,11 @@ namespace Moodle.Classes
 {
     public class Answer
     {
-        public string Content { get; }
-
-        public bool IsRight { get; }
-
-        public Answer(string content, bool isRight)
-        {
-            this.Content = content;
-            this.IsRight = isRight;
-        }
+        public int Id { get; set; }
+        public string Content { get; set; }
+        public bool IsRight { get; set; }
+        public int QuestionId { get; set; }
+        public Question Question { get; set; }
+        public int Number { get; set; }
     }
 }
