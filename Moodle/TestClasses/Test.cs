@@ -1,9 +1,8 @@
-﻿using Moodle.Classes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Moodle.TestClasses
+namespace Moodle.Classes
 {
     public class Test
     {
@@ -14,6 +13,7 @@ namespace Moodle.TestClasses
         public Test()
         {
             UserTests = new List<UserTest>();
+            Questions = new List<Question>();
         }
     }
 }

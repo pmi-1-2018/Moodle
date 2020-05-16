@@ -1,5 +1,4 @@
-﻿using Moodle.TestClasses;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -13,6 +12,11 @@ namespace Moodle.Classes
         public double Mark { get; set; }
         public int TestId { get; set; }
         public Test Test { get; set; }
+        public Question()
+        {
+            Test = new Test();
+            Answers = new List<Answer>();
+        }
         public double CheckAnswer(HashSet<int> actualAnswers)
         {
             HashSet<int> rightAnswers = new HashSet<int>();

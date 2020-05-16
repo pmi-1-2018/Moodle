@@ -12,5 +12,9 @@ namespace Moodle.Classes
         public int QuestionId { get; set; }
         public Question Question { get; set; }
         public int Number { get; set; }
+        public Answer()
+        {
+            Question = new Question();
+        }
     }
 }
