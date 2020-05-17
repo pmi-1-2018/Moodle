@@ -7,16 +7,14 @@ namespace Moodle
 {
     class MainMenu
     {
-        public bool DisplayMenu()
+        public bool DisplayStartMenu()
         {
-            Console.Clear();
+        //    Console.Clear();
             Console.WriteLine("Welcome to the Moodle!");
             Console.WriteLine("Choose an option:");
             Console.WriteLine("1) Log in ");
-            Console.WriteLine("2) Sign un");
-            Console.WriteLine("3) Test");
-            Console.WriteLine("3) Download test");
-            Console.WriteLine("5) Exit");
+            Console.WriteLine("2) Sign up");
+            Console.WriteLine("3) Quit");
             Console.Write("\r\nSelect an option: ");
 
             User user = new User();
@@ -24,18 +22,14 @@ namespace Moodle
             switch (Console.ReadLine())
             {
                 case "1":
+                    Console.Clear();
                     user.LogIntoMoodle();
                     return true;
                 case "2":
-                    // Sign up function
+                    Console.Clear();
+                    user.SignUp();
                     return true;
                 case "3":
-                    //Test function
-                    return true;
-                case "4":
-                    //Download test function
-                    return true;
-                case "5":
                     return false;
                 default:
                     return true;

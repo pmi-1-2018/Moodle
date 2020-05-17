@@ -13,7 +13,7 @@ namespace Moodle
             bool displayMenu = true;
             while (displayMenu)
             {
-                displayMenu = menu.DisplayMenu();
+                displayMenu = menu.DisplayStartMenu();
             }
         }
 

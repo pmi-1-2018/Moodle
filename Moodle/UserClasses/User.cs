@@ -61,6 +61,105 @@ namespace Moodle
             return Regex.IsMatch(password, @"^(?=.*[a - z])(?=.*[A - Z])(?=.*\d)(?=.*[^\da - zA - Z]).{ 8,15}$");
         }
 
+        public bool SignUp()
+        {
+            Console.WriteLine("Create new account\n");
+            Console.WriteLine("Input your email:");
+            string email;
+            string login;
+            email = Console.ReadLine();
+
+            while (isEmailValid(email) == false)
+            {
+                Console.WriteLine("Email is not valid, please try again");
+                email = Console.ReadLine();
+            }
+
+            SQLiteConnection sqlite_conn;
+            sqlite_conn = Program.CreateConnection();
+
+            SQLiteDataReader sqlite_reader;
+            SQLiteCommand sqlite_cmd1;
+            SQLiteCommand sqlite_cmd2;
+            sqlite_cmd1 = sqlite_conn.CreateCommand();
+            sqlite_cmd1.CommandText = "SELECT * FROM users" +
+                " WHERE email='" + email + "';";
+            sqlite_reader = sqlite_cmd1.ExecuteReader();
+
+            if (sqlite_reader.HasRows)
+            {
+                Console.Clear();
+                Console.WriteLine("User with such email already exist");
+                return false;
+            }
+
+            Console.WriteLine("Input your login:");
+            login = Console.ReadLine();
+
+            sqlite_cmd2 = sqlite_conn.CreateCommand();
+            sqlite_cmd2.CommandText = "SELECT * FROM users" +
+                " WHERE login='" + login + "';";
+            sqlite_reader = sqlite_cmd2.ExecuteReader();
+            if (sqlite_reader.HasRows)
+            {
+                Console.Clear();
+                Console.WriteLine("User with such login already exist");
+                return false;
+            }
+
+            string name;
+            string surname;
+            string password;
+            password = "";
+
+            Console.WriteLine("Name: ");
+            name = Console.ReadLine();
+            Console.WriteLine("Surname: ");
+            surname = Console.ReadLine();
+            Console.WriteLine("Password: ");
+            while (true)
+            {
+                var key = Console.ReadKey(true);
+                if (key.Key == ConsoleKey.Enter)
+                {
+                    break;
+                }
+                password += key.KeyChar;
+            }
+
+            string conf_pass;
+            conf_pass = "";
+            Console.WriteLine("Confirm password: ");
+            while (true)
+            {
+                var key = Console.ReadKey(true);
+                if (key.Key == ConsoleKey.Enter)
+                {
+                    break;
+                }
+                conf_pass += key.KeyChar;
+            }
+
+            if(password == conf_pass)
+            {
+                User user = new User(0,name,surname,email,password,login);
+                SQLiteCommand sqlite_cmd;
+                sqlite_cmd = sqlite_conn.CreateCommand();
+                sqlite_cmd.CommandText = "INSERT INTO users (Name, Surname, email, password, login)" +
+                    " VALUES ('" + user.Name +"','" + user.Surname + "','" + user.Email + "','" + user.Password + "','" + user.Login +"')";
+                sqlite_cmd.ExecuteNonQuery();
+                Console.Clear();
+                Console.WriteLine("Account created");
+                return true;
+            }
+            else
+            {
+                Console.Clear();
+                Console.WriteLine("Passwords are not the same");
+                return false;
+            }
+        }
+
         public User LogIntoMoodle()
         {
             User user = new User();
@@ -91,21 +190,31 @@ namespace Moodle
                     string pass = "";
                     while (true)
                     {
-                        var key = System.Console.ReadKey(true);
+                        var key = Console.ReadKey(true);
                         if (key.Key == ConsoleKey.Enter)
+                        {
                             break;
+                        }
                         pass += key.KeyChar;
                     }
                     if ((pass == password) && (pass != null))
                     {
                         user = new User(id,name, surname, email, password,log);
                         sqlite_reader.Close();
+                        Console.Clear();
                         Console.WriteLine($"Logged in as {log}");
+                        MainMenu menu = new MainMenu();
+                        bool displayMenu = true;
+                        while (displayMenu)
+                        {
+                            displayMenu = menu.DisplayStartMenu();
+                        }
                         Console.ReadKey();
                         return user;
                     }
                     else
                     {
+                        Console.Clear();
                         Console.WriteLine("Wrong password.\n");
                         sqlite_reader.Close();
                         return user;
@@ -116,6 +225,7 @@ namespace Moodle
             }
             else
             {
+                Console.Clear();
                 Console.WriteLine("User not found.\n");
                 sqlite_reader.Close();
 
