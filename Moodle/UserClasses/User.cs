@@ -206,7 +206,6 @@ namespace Moodle
                         sqlite_reader.Close();
                         Console.Clear();
                         Console.WriteLine($"Logged in as {log}");
-                        MainMenu menu = new MainMenu();
                         RunTest();
                         Console.ReadKey();
                         return user;
@@ -343,6 +342,9 @@ namespace Moodle
                 mark += test.Questions[i].CheckAnswer(new HashSet<int>(answers));
             }
             Console.WriteLine("\nResult : {0}", mark);
+            Console.ReadKey();
+            Console.Clear();
+            RunTest();
         }
     }
 }
