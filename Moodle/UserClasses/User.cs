@@ -4,6 +4,8 @@ using System.Text;
 using System.Data;
 using System.Text.RegularExpressions;
 using System.Data.SQLite;
+using Moodle.Classes;
+using System.Linq;
 
 namespace Moodle
 {
@@ -150,6 +152,7 @@ namespace Moodle
                 sqlite_cmd.ExecuteNonQuery();
                 Console.Clear();
                 Console.WriteLine("Account created");
+                RunTest();
                 return true;
             }
             else
@@ -204,11 +207,7 @@ namespace Moodle
                         Console.Clear();
                         Console.WriteLine($"Logged in as {log}");
                         MainMenu menu = new MainMenu();
-                        bool displayMenu = true;
-                        while (displayMenu)
-                        {
-                            displayMenu = menu.DisplayStartMenu();
-                        }
+                        RunTest();
                         Console.ReadKey();
                         return user;
                     }
@@ -231,6 +230,119 @@ namespace Moodle
 
                 return user;
             }
+        }
+
+        private Test GetTestFromDB()
+        {
+            Console.WriteLine("\n\n\nAvailable tests : ");
+            SQLiteConnection sqlite_conn;
+            SQLiteDataReader sqlite_reader;
+            SQLiteCommand sqlite_cmd;
+            sqlite_conn = Program.CreateConnection();
+            sqlite_cmd = sqlite_conn.CreateCommand();
+            sqlite_cmd.CommandText = "SELECT * FROM tests";
+            sqlite_reader = sqlite_cmd.ExecuteReader();
+
+            List<Test> availableTests = new List<Test>();
+            if (sqlite_reader.HasRows)
+            {
+                int i = 0;
+                while (sqlite_reader.Read())
+                {
+                    i++;
+                    Test test = new Test();
+                    test.Id = sqlite_reader.GetInt32(0);
+                    test.Name = sqlite_reader.GetString(1);
+                    availableTests.Add(test);
+                    Console.WriteLine("{0}. {1}", i, test.Name);
+                }
+                sqlite_reader.Close();
+            }
+            else
+            {
+                Console.WriteLine("Tests not found.\n");
+                sqlite_reader.Close();
+            }
+
+            Console.Write("\nPlease input test number : ");
+            int testNumberToRun = Convert.ToInt32(Console.ReadLine());
+            testNumberToRun--;
+            Test result = availableTests[testNumberToRun];
+            sqlite_conn = Program.CreateConnection();
+            sqlite_cmd = sqlite_conn.CreateCommand();
+            sqlite_cmd.CommandText = "SELECT * FROM questions WHERE test_id = " + result.Id + ";";
+            sqlite_reader = sqlite_cmd.ExecuteReader();
+
+            if (sqlite_reader.HasRows)
+            {
+                while (sqlite_reader.Read())
+                {
+                    Question question = new Question();
+                    question.Id = sqlite_reader.GetInt32(0);
+                    question.Content = sqlite_reader.GetString(1);
+                    question.Mark = sqlite_reader.GetDouble(2);
+                    question.TestId = sqlite_reader.GetInt32(3);
+                    result.Questions.Add(question);
+                }
+                sqlite_reader.Close();
+            }
+            else
+            {
+                Console.WriteLine("Questions not found.\n");
+                sqlite_reader.Close();
+            }
+
+            for (int i = 0; i < result.Questions.Count; i++)
+            {
+                sqlite_conn = Program.CreateConnection();
+                sqlite_cmd = sqlite_conn.CreateCommand();
+                sqlite_cmd.CommandText = "SELECT * FROM answers WHERE question_id = " + result.Questions[i].Id + ";";
+                sqlite_reader = sqlite_cmd.ExecuteReader();
+
+                if (sqlite_reader.HasRows)
+                {
+                    while (sqlite_reader.Read())
+                    {
+                        Answer answer = new Answer();
+                        answer.Id = sqlite_reader.GetInt32(0);
+                        answer.Content = sqlite_reader.GetString(1);
+                        answer.IsRight = sqlite_reader.GetBoolean(2);
+                        answer.Number = sqlite_reader.GetInt32(3);
+                        answer.QuestionId = sqlite_reader.GetInt32(4);
+                        result.Questions[i].Answers.Add(answer);
+                    }
+                    sqlite_reader.Close();
+                }
+                else
+                {
+                    Console.WriteLine("Answers not found.\n");
+                    sqlite_reader.Close();
+                }
+            }
+            return result;
+        }
+
+        private void RunTest()
+        {
+            Test test = GetTestFromDB();
+            Console.WriteLine("\n\n\nTest name : {0}\n\n", test.Name);
+            double mark = 0.0;
+            string studentAnswer = "";
+            for (int i = 0; i < test.Questions.Count; i++)
+            {
+                Console.WriteLine("{0}. {1}", (i + 1), test.Questions[i].Content);
+                Console.WriteLine();
+                for (int j = 0; j < test.Questions[i].Answers.Count; j++)
+                {
+                    Console.WriteLine("{0}. {1}", test.Questions[i].Answers[j].Number, test.Questions[i].Answers[j].Content);
+                }
+                Console.Write("\nPlease input your answers (separated by comma) : ");
+                studentAnswer = Console.ReadLine();
+                Console.WriteLine();
+                int[] answers = studentAnswer.Split(',').Select(str => int.Parse(str)).ToArray();
+                mark += test.Questions[i].CheckAnswer(new HashSet<int>(answers));
+            }
+            Console.WriteLine("\nResult : {0}", mark);
         }
     }
 }
